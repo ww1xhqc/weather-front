@@ -1,0 +1,40 @@
+name: Deploy to Deno
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: "1.35.x"
+
+      - name: Install dependencies
+        run: deno cache --lock=deno.lock --reload server.ts
+
+      - name: Build project
+        run: |
+          npm install
+          npm run build
+          deno run --allow-read --allow-write build.ts
+
+      - name: Deploy to Deno Deploy
+        uses: denoland/deployctl@v1
+        with:
+          project: "weather-app"
+          entrypoint: server.ts
+          root: dist
+        env:
+          DENO_DEPLOY_TOKEN: ${{ secrets.DENO_DEPLOY_TOKEN }}

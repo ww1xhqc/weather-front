@@ -1,0 +1,15 @@
+{
+  "lock": "deno.lock",
+  "importMap": "import_map.json",
+  "compilerOptions": {
+    "lib": ["deno.window", "deno.ns"],
+    "types": [
+      "https://deno.land/x/serve_handler/types.d.ts",
+      "https://deno.land/deno.d.ts"
+    ]
+  },
+  "tasks": {
+    "start": "deno run --allow-net --allow-read server.ts",
+    "build": "deno run --allow-read --allow-write build.ts"
+  }
+}
